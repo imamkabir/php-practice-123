@@ -1,5 +1,5 @@
 <?php
-$money = 2;
+$money = 0;
 switch($money){
     case 1: 
         echo 'paid';
