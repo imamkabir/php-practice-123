@@ -1,123 +1,149 @@
 <?php
-session_start();
+// OOP: A dedicated class to handle session logic (DRY Principle)
+class SessionManager {
+    public static function start() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    public static function isLoggedIn() {
+        return isset($_SESSION['username']);
+    }
+
+    public static function getUsername() {
+        return self::isLoggedIn() ? htmlspecialchars($_SESSION['username']) : 'Guest';
+    }
+}
+
+// Initialize Session
+SessionManager::start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Dashboard</title>
+    <title>Vice City Ultimate</title>
     <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet">
     <style>
         :root {
-            --vice-pink: #ff00d4;
-            --vice-blue: #00e5ff;
-            --gta-gradient: linear-gradient(to right, #ff00d4, #00e5ff);
+            --neon-pink: #ff00d4;
+            --neon-blue: #00e5ff;
+            --glass-bg: rgba(255, 255, 255, 0.05); /* ULTRA TRANSPARENT */
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         body {
             font-family: 'Grand Hotel', cursive;
-            background: url('img.jpg?v=<?= time() ?>') no-repeat center center fixed; 
-            background-size: cover;
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden; 
+            overflow: hidden;
+            background-color: #000;
         }
 
-        /* Dark overlay to help text pop */
+        /* 1. CINEMATIC BACKGROUND (Ken Burns Zoom) */
         body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.1); 
-            z-index: -1;
+            background: url('img.jpg?v=<?= time() ?>') no-repeat center center fixed; 
+            background-size: cover;
+            z-index: -2;
+            animation: slowZoom 30s ease-in-out infinite alternate;
         }
 
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* 2. OVERLAY */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 3. ULTRA LIQUID CARD */
         .card {
-            /* 1. LIQUID GLASS EFFECT */
-            /* Very low opacity background, but with a gradient reflection */
-            background: linear-gradient(
-                135deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
-                rgba(255, 255, 255, 0.01) 100%
-            );
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px); /* Heavy blur makes text readable */
+            -webkit-backdrop-filter: blur(25px);
             
-            /* 2. THE FROST (Blur) */
-            backdrop-filter: blur(25px); 
-            -webkit-backdrop-filter: blur(25px); /* For Safari/Mac */
+            width: 100%;
+            max-width: 500px;
+            padding: 70px 40px;
+            border-radius: 50px;
             
-            /* 3. GLASS EDGES (Light hits top-left, shadow on bottom-right) */
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            /* Glass Edges */
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-top: 1px solid rgba(255, 255, 255, 0.4);
             border-left: 1px solid rgba(255, 255, 255, 0.4);
             
-            /* 4. DEPTH SHADOW */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            /* Neon Pulse Shadow */
+            box-shadow: 0 0 40px rgba(255, 0, 212, 0.2);
+            animation: pulseGlow 4s infinite alternate, slideIn 1.5s ease-out forwards;
             
-            padding: 60px 40px;
-            border-radius: 40px;
             text-align: center;
-            width: 100%;
-            max-width: 500px;
             color: white;
-            
-            /* Smooth entrance */
-            animation: slideIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 40px rgba(255, 0, 212, 0.2); }
+            100% { box-shadow: 0 0 70px rgba(0, 229, 255, 0.3); }
         }
 
         @keyframes slideIn {
-            0% { opacity: 0; transform: translateY(100px) scale(0.9); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% { opacity: 0; transform: translateY(100px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-size: 80px; 
+            font-size: 85px; 
             margin: 0;
             line-height: 1.1;
-            /* Gradient Text */
-            background: var(--gta-gradient);
+            background: linear-gradient(to right, var(--neon-pink), var(--neon-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            /* Glass text shadow */
-            filter: drop-shadow(0px 2px 10px rgba(0,0,0,0.3));
+            filter: drop-shadow(0px 0px 15px rgba(255, 0, 212, 0.5));
             font-weight: normal;
         }
 
         p {
-            font-size: 36px; 
+            font-size: 38px; 
             margin: 15px 0 50px 0;
-            color: rgba(255, 255, 255, 0.9); /* Slightly translucent white text */
+            color: rgba(255, 255, 255, 0.9);
             letter-spacing: 1px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
 
         .btn {
             display: inline-block;
-            /* Totally transparent button with glass border */
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
             padding: 15px 50px;
             border-radius: 100px;
             text-decoration: none;
             font-size: 32px; 
-            
-            /* Cyan Glass Border */
             border: 1px solid rgba(0, 229, 255, 0.4); 
-            border-top: 1px solid rgba(0, 229, 255, 0.8);
-            
-            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2); 
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); 
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
         }
 
         .btn:hover {
-            background: rgba(0, 229, 255, 0.2);
-            box-shadow: 0 0 40px rgba(0, 229, 255, 0.6);
-            transform: translateY(-3px);
-            border-color: #00e5ff;
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 50px var(--neon-blue);
+            transform: scale(1.1);
+            border-color: var(--neon-blue);
         }
 
         .status-dot {
@@ -136,8 +162,8 @@ session_start();
 <body>
 
     <div class="card">
-        <?php if(isset($_SESSION['username'])): ?>
-            <h1>Welcome <?= htmlspecialchars($_SESSION['username']) ?></h1>
+        <?php if(SessionManager::isLoggedIn()): ?>
+            <h1>Welcome <?= SessionManager::getUsername() ?></h1>
             <p>
                 <span class="status-dot"></span>System Active
             </p>
