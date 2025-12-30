@@ -1,12 +1,14 @@
 <?php
-function play($button){
-    switch($button){
+function play($button)
+{
+    switch ($button) {
         case "x":
-        echo 'jump';
-        break;
+            echo 'jump';
+            break;
     }
-   
-    
-};
- play("x");
+
+
+}
+;
+play("x");
 ?>

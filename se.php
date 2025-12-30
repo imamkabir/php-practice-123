@@ -248,9 +248,9 @@ if (isset($_POST['submit'])) {
                 <input type="text" name="username" placeholder="Identity" required autocomplete="off">
             </div>
             <div class="input-group">
-                <input type="password" name="password" placeholder="Passkey" required>
+                <input type="password" name="password" placeholder="BAT KEY" required>
             </div>
-            <input type="submit" value="Accept Mission" name="submit">
+            <input type="submit" value="LOGIN" name="submit">
         </form>
     </div>
 

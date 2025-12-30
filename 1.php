@@ -11,9 +11,9 @@
 //$status = ""; // Empty for now
 
 //if ($age >= 18) {
-  //  $status = "Adult";
+//  $status = "Adult";
 //} else {
-  //  $status = "Kid";
+//  $status = "Kid";
 //}
 
 //echo $status;

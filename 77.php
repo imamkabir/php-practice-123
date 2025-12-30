@@ -5,7 +5,7 @@ $numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 // This function loops through the array and KEEPS only what you want.
 // We are telling it: "Only keep numbers that are less than or equal to 5"
 
-$lessThanFive = array_filter($numbers, function($number) {
+$lessThanFive = array_filter($numbers, function ($number) {
     return $number <= 5; // If this is TRUE, keep the number. If FALSE, throw it away.
 });
 
