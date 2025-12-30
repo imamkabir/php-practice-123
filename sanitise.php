@@ -17,3 +17,5 @@ if (isset($_POST['submit'])) {
     </div>
     <input type="submit" value="Submit" name="submit">
 </form>
+// if i  wantedn security i would rap them in a array and add htmlspecialcharts ok
+// or we ise filter input so i know it exits i just have no time to go depp i know its there so if i need it i will get ack or googl it later 
