@@ -1,16 +1,29 @@
 <?php
 session_start();
 
-if (isset($_POST['submit'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+// OOP: encapsulated login logic
+class Auth {
+    // DRY: Single source of truth for checking credentials
+    public static function attempt($username, $password) {
+        // In the future, this is where you connect to MySQL
+        if ($username === 'john' && $password === 'password') {
+            $_SESSION['username'] = $username;
+            return true;
+        }
+        return false;
+    }
+}
 
-    if($username == 'john' && $password == 'password'){
-        $_SESSION['username'] = $username;
+// Controller Logic
+if (isset($_POST['submit'])) {
+    $user = $_POST['username'];
+    $pass = $_POST['password'];
+
+    if (Auth::attempt($user, $pass)) {
         header('Location: /extras/dashboard.php');
-        exit(); 
+        exit();
     } else {
-        $error = "Access Denied"; 
+        $error = "Access Denied";
     }
 }
 ?>
@@ -26,7 +39,6 @@ if (isset($_POST['submit'])) {
         :root {
             --bat-black: #050505;
             --bat-gold: #cfb53b; 
-            --glass-border: rgba(255, 255, 255, 0.25);
         }
 
         body {
@@ -59,7 +71,8 @@ if (isset($_POST['submit'])) {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 100%);
+            /* Lighter overlay so you can see the face clearly */
+            background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
             z-index: -1;
             pointer-events: none;
         }
@@ -69,29 +82,28 @@ if (isset($_POST['submit'])) {
             100% { transform: scale(1.15); }
         }
 
-        /* 2. ALMOST TRANSPARENT GLASS CARD */
+        /* 2. THE GHOST CARD */
         .login-card {
-            /* SUPER TRANSPARENT
-               Only 15% opacity on the black, creating a "barely there" look 
+            /* GHOST MODE: 
+               0.05 opacity = 95% transparent. 
+               It is essentially invisible glass.
             */
-            background: rgba(15, 15, 15, 0.15);
+            background: rgba(255, 255, 255, 0.02);
             
-            /* The Blur does the heavy lifting for readability */
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
+            /* High blur to distinguish text from background details */
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
             
             width: 100%;
             max-width: 400px;
             padding: 60px 40px;
             border-radius: 50px;
             
-            /* STRONG GLASS REFLECTION BORDERS */
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-top: 1px solid rgba(255, 255, 255, 0.35); /* Bright top edge to catch light */
-            border-left: 1px solid rgba(255, 255, 255, 0.35); /* Bright left edge */
+            /* Extremely subtle borders */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
             
-            /* Deep, soft shadow to separate it from the background */
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
             
             text-align: center;
             color: white;
@@ -109,25 +121,25 @@ if (isset($_POST['submit'])) {
             color: #fff;
             margin-bottom: 5px;
             letter-spacing: 2px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9); /* Heavy shadow for readability */
             font-weight: 700;
         }
 
         p.subtitle {
-            color: rgba(255, 255, 255, 0.7); /* Slightly brighter for contrast */
+            color: rgba(255, 255, 255, 0.8);
             font-size: 15px;
             margin-bottom: 40px;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 500;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.9);
         }
 
         .input-group {
             margin-bottom: 25px;
         }
 
-        /* Inputs: Almost invisible */
+        /* 3. INVISIBLE INPUTS */
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -136,61 +148,69 @@ if (isset($_POST['submit'])) {
             font-size: 18px;
             color: #fff;
             
-            /* 10% opacity white background */
-            background: rgba(255, 255, 255, 0.05);
+            /* TOTALLY TRANSPARENT BACKGROUND */
+            background: transparent;
+            
+            /* Very faint border */
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50px;
             
             outline: none;
             box-sizing: border-box;
             transition: all 0.3s ease;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            
+            /* Text shadow needed because background is clear */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
         input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
             font-size: 14px;
             letter-spacing: 1px;
         }
 
         input:focus {
-            background: rgba(0, 0, 0, 0.5); /* Darkens when you type */
+            /* Slight darkness on focus so you know you are typing */
+            background: rgba(0, 0, 0, 0.2); 
             border-color: var(--bat-gold);
-            box-shadow: 0 0 25px rgba(207, 181, 59, 0.25);
+            box-shadow: 0 0 20px rgba(207, 181, 59, 0.2);
             transform: scale(1.02);
         }
 
         /* Gold Button */
         input[type="submit"] {
-            background: linear-gradient(135deg, #cfb53b 0%, #9e8826 100%);
-            color: #1a1a1a;
+            background: transparent; /* See-through button */
+            color: var(--bat-gold);
             font-family: 'Cinzel', serif;
             font-size: 18px;
             font-weight: 700;
             padding: 18px;
             width: 100%;
-            border: none;
+            
+            border: 1px solid var(--bat-gold);
             border-radius: 50px;
+            
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: 10px;
-            box-shadow: 0 10px 30px rgba(158, 136, 38, 0.3);
-            border-top: 1px solid rgba(255,255,255,0.4);
+            text-shadow: 0 1px 5px rgba(0,0,0,0.8);
+            box-shadow: 0 0 15px rgba(207, 181, 59, 0.1);
         }
 
         input[type="submit"]:hover {
+            background: var(--bat-gold);
+            color: #000;
+            box-shadow: 0 0 40px rgba(207, 181, 59, 0.6);
             transform: translateY(-3px);
-            box-shadow: 0 0 40px rgba(207, 181, 59, 0.6); /* Stronger glow on hover */
-            filter: brightness(1.2);
+            text-shadow: none;
         }
 
         .error-msg {
             color: #ff4d4d;
-            background: rgba(255, 0, 0, 0.15);
+            background: rgba(255, 0, 0, 0.1);
             padding: 12px;
             border-radius: 15px;
             margin-bottom: 25px;
