@@ -1,11 +1,10 @@
 <?php
 session_start();
 
-// OOP: encapsulated login logic
+// OOP: Encapsulated Auth Logic
 class Auth {
-    // DRY: Single source of truth for checking credentials
+    // DRY: Single check point
     public static function attempt($username, $password) {
-        // In the future, this is where you connect to MySQL
         if ($username === 'john' && $password === 'password') {
             $_SESSION['username'] = $username;
             return true;
@@ -14,16 +13,13 @@ class Auth {
     }
 }
 
-// Controller Logic
+// Controller
 if (isset($_POST['submit'])) {
-    $user = $_POST['username'];
-    $pass = $_POST['password'];
-
-    if (Auth::attempt($user, $pass)) {
+    if (Auth::attempt($_POST['username'], $_POST['password'])) {
         header('Location: /extras/dashboard.php');
         exit();
     } else {
-        $error = "Access Denied";
+        $error = "Mission Failed: Access Denied";
     }
 }
 ?>
@@ -51,11 +47,11 @@ if (isset($_POST['submit'])) {
             overflow: hidden;
             background-color: var(--bat-black);
             
-            /* TACTICAL BATARANG CURSOR */
+            /* TACTICAL CURSOR */
             cursor: url("data:image/svg+xml,%3Csvg width='32' height='18' viewBox='0 0 32 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 1.5C16 1.5 12 6 8 8C4 10 0 8 0 8L2 14L8 11C8 11 12 14 16 18C20 14 24 11 24 11L30 14L32 8C32 8 28 10 24 8C20 6 16 1.5 16 1.5Z' fill='%230a0a0a' stroke='%23333' stroke-width='0.5'/%3E%3C/svg%3E") 16 9, auto;
         }
 
-        /* 1. CINEMATIC BACKGROUND */
+        /* 1. BACKGROUND */
         body::before {
             content: '';
             position: absolute;
@@ -71,8 +67,7 @@ if (isset($_POST['submit'])) {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            /* Lighter overlay so you can see the face clearly */
-            background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
             z-index: -1;
             pointer-events: none;
         }
@@ -82,37 +77,43 @@ if (isset($_POST['submit'])) {
             100% { transform: scale(1.15); }
         }
 
-        /* 2. THE GHOST CARD */
+        /* 2. THE MISSION CARD (Dormant State) */
         .login-card {
-            /* GHOST MODE: 
-               0.05 opacity = 95% transparent. 
-               It is essentially invisible glass.
-            */
-            background: rgba(255, 255, 255, 0.02);
-            
-            /* High blur to distinguish text from background details */
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px);
-            
+            /* Stealth Mode: Low opacity, smaller, greyed out */
+            background: rgba(0, 0, 0, 0.4); 
             width: 100%;
             max-width: 400px;
             padding: 60px 40px;
             border-radius: 50px;
             
-            /* Extremely subtle borders */
+            /* Dim borders */
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
             
             text-align: center;
             color: white;
-            animation: slideUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            
+            /* THE TRANSITION ENGINE (This makes the animation smooth) */
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Initial State */
+            transform: scale(0.95);
+            opacity: 0.6;
+            filter: grayscale(100%); /* Black and white initially */
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(60px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        /* 3. MISSION ACTIVATED (Hover State) */
+        .login-card:hover {
+            /* Power Up */
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            
+            transform: scale(1.0); /* Zooms in */
+            opacity: 1; /* Fully visible */
+            filter: grayscale(0%); /* Color returns */
+            
+            /* Gold Ignition */
+            border-color: var(--bat-gold);
+            box-shadow: 0 0 60px rgba(207, 181, 59, 0.2); /* Big Gold Glow */
         }
 
         h1 {
@@ -121,25 +122,35 @@ if (isset($_POST['submit'])) {
             color: #fff;
             margin-bottom: 5px;
             letter-spacing: 2px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.9); /* Heavy shadow for readability */
             font-weight: 700;
+            transition: color 0.5s ease;
+        }
+
+        /* Text turns gold on hover */
+        .login-card:hover h1 {
+            color: var(--bat-gold);
+            text-shadow: 0 0 15px rgba(207, 181, 59, 0.5);
         }
 
         p.subtitle {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 15px;
             margin-bottom: 40px;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 500;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+            transition: color 0.5s ease;
+        }
+        
+        .login-card:hover p.subtitle {
+            color: #fff;
         }
 
         .input-group {
             margin-bottom: 25px;
         }
 
-        /* 3. INVISIBLE INPUTS */
+        /* 4. REACTIVE INPUTS */
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -148,64 +159,60 @@ if (isset($_POST['submit'])) {
             font-size: 18px;
             color: #fff;
             
-            /* TOTALLY TRANSPARENT BACKGROUND */
+            /* Invisible initially */
             background: transparent;
-            
-            /* Very faint border */
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50px;
-            
             outline: none;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
             
-            /* Text shadow needed because background is clear */
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            transition: all 0.4s ease;
+            opacity: 0.5; /* Hard to see initially */
         }
 
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
+        /* Inputs light up when card is hovered */
+        .login-card:hover input[type="text"],
+        .login-card:hover input[type="password"] {
+            opacity: 1;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         input:focus {
-            /* Slight darkness on focus so you know you are typing */
-            background: rgba(0, 0, 0, 0.2); 
-            border-color: var(--bat-gold);
-            box-shadow: 0 0 20px rgba(207, 181, 59, 0.2);
-            transform: scale(1.02);
+            background: rgba(0, 0, 0, 0.5) !important;
+            border-color: var(--bat-gold) !important;
+            box-shadow: 0 0 20px rgba(207, 181, 59, 0.3);
+            transform: scale(1.05);
         }
 
         /* Gold Button */
         input[type="submit"] {
-            background: transparent; /* See-through button */
-            color: var(--bat-gold);
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            font-weight: 700;
+            background: transparent;
+            color: transparent; /* Text invisible initially */
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px;
             padding: 18px;
             width: 100%;
-            
-            border: 1px solid var(--bat-gold);
-            border-radius: 50px;
-            
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
             margin-top: 10px;
-            text-shadow: 0 1px 5px rgba(0,0,0,0.8);
-            box-shadow: 0 0 15px rgba(207, 181, 59, 0.1);
+        }
+
+        /* Button Reveals on Hover */
+        .login-card:hover input[type="submit"] {
+            color: var(--bat-gold);
+            border-color: var(--bat-gold);
         }
 
         input[type="submit"]:hover {
-            background: var(--bat-gold);
-            color: #000;
-            box-shadow: 0 0 40px rgba(207, 181, 59, 0.6);
+            background: var(--bat-gold) !important;
+            color: #000 !important;
+            box-shadow: 0 0 40px rgba(207, 181, 59, 0.8);
             transform: translateY(-3px);
-            text-shadow: none;
+            font-weight: bold;
         }
 
         .error-msg {
@@ -218,7 +225,6 @@ if (isset($_POST['submit'])) {
             border: 1px solid rgba(255, 77, 77, 0.3);
             font-size: 14px;
             backdrop-filter: blur(5px);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
     </style>
 </head>
@@ -226,7 +232,7 @@ if (isset($_POST['submit'])) {
 
     <div class="login-card">
         <h1>Gotham Gate</h1>
-        <p class="subtitle">Secure Access</p>
+        <p class="subtitle">Mission Status: Pending</p>
 
         <?php if(isset($error)): ?>
             <span class="error-msg">⚠ <?= $error ?></span>
@@ -239,7 +245,7 @@ if (isset($_POST['submit'])) {
             <div class="input-group">
                 <input type="password" name="password" placeholder="Passkey" required>
             </div>
-            <input type="submit" value="Initiate" name="submit">
+            <input type="submit" value="Accept Mission" name="submit">
         </form>
     </div>
 
