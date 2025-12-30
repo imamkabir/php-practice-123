@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-// OOP: Encapsulated Auth Logic
 class Auth {
-    // DRY: Single check point
     public static function attempt($username, $password) {
         if ($username === 'john' && $password === 'password') {
             $_SESSION['username'] = $username;
@@ -13,7 +11,6 @@ class Auth {
     }
 }
 
-// Controller
 if (isset($_POST['submit'])) {
     if (Auth::attempt($_POST['username'], $_POST['password'])) {
         header('Location: /extras/dashboard.php');
@@ -46,12 +43,9 @@ if (isset($_POST['submit'])) {
             align-items: center;
             overflow: hidden;
             background-color: var(--bat-black);
-            
-            /* TACTICAL CURSOR */
             cursor: url("data:image/svg+xml,%3Csvg width='32' height='18' viewBox='0 0 32 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 1.5C16 1.5 12 6 8 8C4 10 0 8 0 8L2 14L8 11C8 11 12 14 16 18C20 14 24 11 24 11L30 14L32 8C32 8 28 10 24 8C20 6 16 1.5 16 1.5Z' fill='%230a0a0a' stroke='%23333' stroke-width='0.5'/%3E%3C/svg%3E") 16 9, auto;
         }
 
-        /* 1. BACKGROUND */
         body::before {
             content: '';
             position: absolute;
@@ -62,7 +56,6 @@ if (isset($_POST['submit'])) {
             animation: slowZoom 30s ease-in-out infinite alternate;
         }
 
-        /* Dark Overlay */
         body::after {
             content: '';
             position: absolute;
@@ -77,80 +70,78 @@ if (isset($_POST['submit'])) {
             100% { transform: scale(1.15); }
         }
 
-        /* 2. THE MISSION CARD (Dormant State) */
+        /* 2. THE DORMANT CARD */
         .login-card {
-            /* Stealth Mode: Low opacity, smaller, greyed out */
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.6); 
             width: 100%;
             max-width: 400px;
             padding: 60px 40px;
             border-radius: 50px;
-            
-            /* Dim borders */
             border: 1px solid rgba(255, 255, 255, 0.05);
-            
             text-align: center;
             color: white;
             
-            /* THE TRANSITION ENGINE (This makes the animation smooth) */
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            /* DORMANT STATE */
+            transform: scale(0.9);
+            opacity: 0.5;
+            filter: grayscale(100%);
             
-            /* Initial State */
-            transform: scale(0.95);
-            opacity: 0.6;
-            filter: grayscale(100%); /* Black and white initially */
+            /* SLOW MOTION TRANSITION (2 Seconds) */
+            transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* 3. MISSION ACTIVATED (Hover State) */
+        /* 3. SUIT UP (HOVER STATE) */
         .login-card:hover {
-            /* Power Up */
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
+            /* 1. Glass Armor Activates */
+            background: rgba(30, 30, 35, 0.4); /* More transparent but darker */
+            backdrop-filter: blur(30px); /* Heavy Glass */
+            -webkit-backdrop-filter: blur(30px);
             
-            transform: scale(1.0); /* Zooms in */
-            opacity: 1; /* Fully visible */
-            filter: grayscale(0%); /* Color returns */
+            transform: scale(1.0);
+            opacity: 1;
+            filter: grayscale(0%);
             
-            /* Gold Ignition */
-            border-color: var(--bat-gold);
-            box-shadow: 0 0 60px rgba(207, 181, 59, 0.2); /* Big Gold Glow */
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 
+                        inset 0 0 40px rgba(255, 255, 255, 0.05);
         }
 
         h1 {
             font-family: 'Cinzel', serif;
             font-size: 36px;
-            color: #fff;
+            color: #888; /* Grey initially */
             margin-bottom: 5px;
             letter-spacing: 2px;
             font-weight: 700;
-            transition: color 0.5s ease;
+            transition: all 1.5s ease;
         }
 
-        /* Text turns gold on hover */
+        /* Text turns gold slowly */
         .login-card:hover h1 {
             color: var(--bat-gold);
-            text-shadow: 0 0 15px rgba(207, 181, 59, 0.5);
+            text-shadow: 0 0 20px rgba(207, 181, 59, 0.6);
         }
 
         p.subtitle {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.3);
             font-size: 15px;
             margin-bottom: 40px;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 500;
-            transition: color 0.5s ease;
+            transition: all 1.5s ease;
         }
         
         .login-card:hover p.subtitle {
             color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
         .input-group {
             margin-bottom: 25px;
         }
 
-        /* 4. REACTIVE INPUTS */
+        /* 4. INPUTS: THE STAGGERED REVEAL */
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -158,61 +149,76 @@ if (isset($_POST['submit'])) {
             font-family: 'Rajdhani', sans-serif;
             font-size: 18px;
             color: #fff;
-            
-            /* Invisible initially */
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.0); /* Invisible border initially */
             border-radius: 50px;
             outline: none;
             
-            transition: all 0.4s ease;
-            opacity: 0.5; /* Hard to see initially */
+            /* HIDDEN INITIALLY */
+            opacity: 0; 
+            transform: translateY(20px); /* Pushed down slightly */
+            
+            /* SLOW REVEAL */
+            transition: all 1.5s ease;
         }
 
-        /* Inputs light up when card is hovered */
+        /* Reveal inputs ONLY on hover, with DELAY */
         .login-card:hover input[type="text"],
         .login-card:hover input[type="password"] {
             opacity: 1;
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(0);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.03);
+            
+            /* DELAY: Waits 0.3s before starting to appear */
+            transition-delay: 0.3s;
         }
 
         input:focus {
             background: rgba(0, 0, 0, 0.5) !important;
             border-color: var(--bat-gold) !important;
-            box-shadow: 0 0 20px rgba(207, 181, 59, 0.3);
-            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(207, 181, 59, 0.2);
+            transition-delay: 0s !important; /* Instant response when typing */
         }
 
-        /* Gold Button */
+        /* 5. BUTTON: THE FINAL PIECE */
         input[type="submit"] {
             background: transparent;
-            color: transparent; /* Text invisible initially */
-            border: 1px solid rgba(255,255,255,0.1);
+            color: transparent;
+            border: 1px solid transparent;
             border-radius: 50px;
             padding: 18px;
             width: 100%;
             cursor: pointer;
-            transition: all 0.5s ease;
+            margin-top: 10px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            font-weight: 700;
-            font-family: 'Cinzel', serif;
-            margin-top: 10px;
+            
+            /* HIDDEN */
+            opacity: 0;
+            transform: translateY(20px);
+            
+            transition: all 1.5s ease;
         }
 
-        /* Button Reveals on Hover */
         .login-card:hover input[type="submit"] {
+            opacity: 1;
+            transform: translateY(0);
             color: var(--bat-gold);
             border-color: var(--bat-gold);
+            
+            /* BIG DELAY: Appears last (0.8s wait) */
+            transition-delay: 0.8s;
         }
 
         input[type="submit"]:hover {
             background: var(--bat-gold) !important;
             color: #000 !important;
-            box-shadow: 0 0 40px rgba(207, 181, 59, 0.8);
-            transform: translateY(-3px);
-            font-weight: bold;
+            box-shadow: 0 0 50px rgba(207, 181, 59, 0.8);
+            transform: translateY(-2px);
+            transition-delay: 0s !important; /* Instant hover effect */
         }
 
         .error-msg {
@@ -224,7 +230,6 @@ if (isset($_POST['submit'])) {
             display: block;
             border: 1px solid rgba(255, 77, 77, 0.3);
             font-size: 14px;
-            backdrop-filter: blur(5px);
         }
     </style>
 </head>
@@ -232,7 +237,7 @@ if (isset($_POST['submit'])) {
 
     <div class="login-card">
         <h1>Gotham Gate</h1>
-        <p class="subtitle">Mission Status: Pending</p>
+        <p class="subtitle">System Dormant</p>
 
         <?php if(isset($error)): ?>
             <span class="error-msg">⚠ <?= $error ?></span>
