@@ -1,5 +1,5 @@
 <?php
-$h = 'nadiya';
+$h = 'niame';
 function createuser()
 {
     echo 'user register';
