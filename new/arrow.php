@@ -1,13 +1,13 @@
 <?php
-// 1️⃣ Discount error handler (arrow function)
+// 1 Discount error handler (arrow function)
 $discountError = fn($d) => "Invalid discount: $d";
 
-// 2️⃣ Add function
+// 2️ Add function
 function add($a, $b) {
     return $a + $b;
 }
 
-// 3️⃣ Apply discount function
+// 3️Apply discount function
 function applyDiscount($price, $discount, callable $onError) {
 
     if ($discount > 1) {
@@ -18,7 +18,7 @@ function applyDiscount($price, $discount, callable $onError) {
     return;
 }
 
-// 4️⃣ Use the functions
+// 4️Use the functions
 $total = add(100, 50);
 $final = applyDiscount($total, 0.2, $discountError);
 
