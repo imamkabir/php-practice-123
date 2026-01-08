@@ -2,9 +2,9 @@
 function subtract($x, $y) {
     return $x - $y;
 }
-
+=
 function divide($x, $y = 1) {
-    if ($y === 0) {
+    if ($y <= 0) {
         return "Cannot divide by zero";
     }
     return $x / $y;
@@ -20,3 +20,7 @@ $second = divide($first, 2); // 4
 $final = $second + 5; // 9
 
 echo $final; // prints 9
+
+
+1 === '1';
+1 == '1';
