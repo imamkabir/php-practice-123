@@ -1,9 +1,4 @@
 <?php
-function calculatePrice($price $disscount) {
-    <?php
-function calculatePrice($price $disscount) {
-    <?php
-function calculatePrice($price $disscount) {
-    <?php
-function calculatePrice($price $disscount) {
-    
+function calculatePrice($price, $discount) {
+    return $price * (1 - $disscount);
+} 
