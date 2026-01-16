@@ -124,4 +124,18 @@ class MyClass8 {
     public function getEmail() {
         return $this->email;
     }
-}?><?php
+}?><?php    
+class MyClass9 {    
+    private $brand;
+    private $type;          
+    public function __construct($brand, $type) {    
+        $this->brand = $brand;
+        $this->type = $type;
+    }   
+    public function getBrand() {
+        return $this->brand;
+    }   
+    public function getType() {
+        return $this->type;
+    }
+}?>
