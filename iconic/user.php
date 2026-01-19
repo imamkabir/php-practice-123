@@ -16,7 +16,7 @@ class User {
 }
 
 //  THE CHILD 
-// "extends User" means Student gets $name, $email, and login() for free
+// extends User means Student gets $name, $email, and login() for free
 class Student extends User {
     private $gpa;
 
@@ -31,11 +31,8 @@ class Student extends User {
         echo "Student {$this->name} is viewing grades. GPA: {$this->gpa}\n";
     }
 }
-
-
-
 // create a Student.
-$s1 = new Student("Ahmed", "ahmed@iconic.edu", 3.8);
+$s1 = new Student("Ahmed", "a", 3.8);
 
 // The Student can use the inherited login() method:
 $s1->login(); 
@@ -43,4 +40,7 @@ $s1->login();
 // And the special student feature works too:
 $s1->viewGrades();
 
+$s2 = new Student("imam", "imam@iconic.edu", 3.0);
+$s2->login();
+$s2->viewGrades();
 ?>
