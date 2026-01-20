@@ -118,7 +118,7 @@ $myCard = new ATMCard("Software Engineer", "1111", 5000000);
 
 echo $myCard->getDetails() . "\n";
 
-// 1. Withdrawal Fail (Wrong PIN)
+
 $myCard->withdraw(100, "1111");
 
 // 2. Withdrawal Success
