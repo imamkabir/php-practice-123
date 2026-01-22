@@ -295,7 +295,7 @@ $loginController->handleLogin();
         <p class="subtitle">System Dormant</p>
 
         <?php if($loginController->getError()): ?>
-            <span class="error-msg">⚠ <?= $loginController->getError() ?></span>
+            <span class="error-msg"> <?= $loginController->getError() ?></span>
         <?php endif; ?>
 
         <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
