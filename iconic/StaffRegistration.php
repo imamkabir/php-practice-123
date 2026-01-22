@@ -21,6 +21,8 @@ class StaffMember
 }
 
 $staff1 = new StaffMember("Ibrahim");
+$staff2 = new StaffMember("Adegoke");
+$staff3 = new StaffMember("Musa");  
 echo "Name: {$staff1->name} | ID: {$staff1->myStaffId}\n";
 
 $staff2 = new StaffMember("Dr. Adegoke");
